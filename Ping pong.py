@@ -200,7 +200,7 @@ def start_menu():
                 ball.setx(front_barrier1 + 1)
                 ball.setx(-459)
         if ball.xcor() >= front_barrier2 and ball.xcor() <= back_barrier2:
-            if padel2.ycor() - 60 <= ball.ycor() <= padel2.ycor() + 60:
+            if padel2.ycor() - 60 <= ball.ycor() <= padel2.ycor() + 65:
                 ball.move_x *= -1
                 ball.color(random.choice(color))
                 ball.move_x -= 1.5
@@ -228,7 +228,7 @@ def start_menu():
             back_barrier1 = -480
             front_barrier2 = 460
             back_barrier2 = 480
-            boost = time.time() + 3
+            boost = time.time() + 6
 
         if ball.xcor() <= -500:
             ball.goto(0,0)
