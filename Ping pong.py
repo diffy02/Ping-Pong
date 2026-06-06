@@ -8,7 +8,7 @@ from Title_score import Title
 screen = turtle.Screen()
 turtle.colormode(255)
 screen.bgcolor((0, 0, 0))
-screen.title('small P.O.N.G')
+screen.title('P.O.N.G repaddled')
 screen.setup(width=1000, height=500)
 screen.tracer(0)
 score1 = 0
@@ -68,6 +68,11 @@ padel2.shapesize(stretch_len=5,stretch_wid=1)
 padel2.penup()
 padel2.setheading(90)
 
+menu1 = turtle.Turtle()
+menu1.hideturtle()
+menu1.penup()
+menu1.color((255,255,255))
+
 ball = Ball()
 
 move_loop1 = False
@@ -117,6 +122,7 @@ def moving2():
 def trigger_dash():
     dash_sys.trigger()
 
+boost = 0
 bot_speed = 9
 def move_bot():
     global bot_speed
@@ -128,6 +134,9 @@ def move_bot():
         bot_speed = 9
     else:
         bot_speed -= 3
+
+    if boost != 0 and time.time() < boost:
+        bot_speed += 8
 
     if ball.ycor() > padel2.ycor():
         new_y = padel2.ycor() + bot_speed
@@ -154,94 +163,113 @@ screen.onkeyrelease(stop_down, 'Down')
 
 screen.onkeypress(trigger_dash, 'q')
 
+def nothing():
+    pass
 
-
-game = True
-while game:
+def draw_menu():
     screen.update()
-    time.sleep(0.05)
+    menu1.goto(0,100)
+    menu1.write('PONG REPADDLED', align='center', font=("Courier New", 45, "bold"))
+    menu1.goto(0,-50)
+    menu1.write('[press space to play]', align='center', font=("Courier New", 15, "normal"))
+    screen.update()
 
-    dash_sys.update()
-    ball.move()
-    ball.barrier()
+def start_menu():
+    menu1.clear()
+    screen.onkeypress(nothing, 'space')
+    game = True
+    global front_barrier1,front_barrier2,back_barrier1,back_barrier2,bot_speed,comment_expiration,boost
 
-    if ball.xcor() <= front_barrier1 and ball.xcor() >= back_barrier1:
-        if padel1.ycor() - 50 <= ball.ycor() <= padel1.ycor() + 50:
-            ball.move_x *= -1
-            ball.color(random.choice(color))
-            ball.move_x += 1.5
-            ball.move_y += 0.5
-            bot_speed += 4
-            front_barrier1 += 2.5
-            back_barrier1 -= 2.5
-            ball.setx(front_barrier1 + 1)
-            ball.setx(-459)
-    if ball.xcor() >= front_barrier2 and ball.xcor() <= back_barrier2:
-        if padel2.ycor() - 60 <= ball.ycor() <= padel2.ycor() + 60:
-            ball.move_x *= -1
-            ball.color(random.choice(color))
-            ball.move_x -= 1.5
-            ball.move_y -= 0.5
-            bot_speed += 4
-            front_barrier2 -= 2.5
-            back_barrier2 += 2.5
-            ball.setx(front_barrier2 - 1)
-            ball.setx(459)
-
-    if ball.xcor() >= 500:
-        ball.goto(0,0)
-        title1.update()
-        if title1.score % 3 == 0 and title1.score < 6: #If you don't remember on what the modulo operator does,
-            comment.color(random.choice(color))         #It divides the two numbers, and returns the remains from the division
-            ball.move_y += 1                            #For example, if 5 were to divide by 4, then it would return 1, instead of the result from the 2 numbers.
-            comment.write(f'{random.choice(commenter1)}', align='center', font=("Courier New", 15, "normal"))
-            screen.update()
-            comment_expiration = time.time() + 1.5 #If you don't know what this variable means, it's that the variable will keep the current timer.
-                                                   #For example, if the time.time() is 100, then it would be 101.5, and it would not be counting.
-        ball.move_x = random.choice(RNG1)
-        ball.move_y = random.choice(RNG2)
-        bot_speed += 1
-        front_barrier1 = -460
-        back_barrier1 = -480
-        front_barrier2 = 460
-        back_barrier2 = 480
-
-    if ball.xcor() <= -500:
-        ball.goto(0,0)
-        title2.update()
-        comment.color(random.choice(color))
-        ball.move_y += 1
-        comment.write(f'{random.choice(commenter2)}', align='center', font=("Courier New", 15, "normal"))
+    while game:
         screen.update()
-        comment_expiration = time.time() + 1.5
+        time.sleep(0.05)
 
-        ball.move_x = random.choice(RNG1)
-        ball.move_y = random.choice(RNG2)
-        front_barrier1 = -460
-        back_barrier1 = -480
-        front_barrier2 = 460
-        back_barrier2 = 480
-        dash_sys.cooldown -= 0.25
+        dash_sys.update()
+        ball.move()
+        ball.barrier()
 
-    if comment_expiration != 0 and time.time() > comment_expiration: #This statement checks the duration of the text lasts, Before clearing itself.
-        comment.clear()
-        comment_expiration = 0
+        if ball.xcor() <= front_barrier1 and ball.xcor() >= back_barrier1:
+            if padel1.ycor() - 50 <= ball.ycor() <= padel1.ycor() + 50:
+                ball.move_x *= -1
+                ball.color(random.choice(color))
+                ball.move_x += 1.5
+                ball.move_y += 0.5
+                bot_speed += 4
+                front_barrier1 += 2.5
+                back_barrier1 -= 2.5
+                ball.setx(front_barrier1 + 1)
+                ball.setx(-459)
+        if ball.xcor() >= front_barrier2 and ball.xcor() <= back_barrier2:
+            if padel2.ycor() - 60 <= ball.ycor() <= padel2.ycor() + 60:
+                ball.move_x *= -1
+                ball.color(random.choice(color))
+                ball.move_x -= 1.5
+                ball.move_y -= 0.5
+                bot_speed += 4
+                front_barrier2 -= 2.5
+                back_barrier2 += 2.5
+                ball.setx(front_barrier2 - 1)
+                ball.setx(459)
 
-    if title1.score == 6:
-        timmy = turtle.Turtle()
-        timmy.hideturtle()
-        timmy.color(random.choice(color))
-        timmy.write(f'{random.choice(winner)}', align='center', font=("Courier New", 45, "normal"))
-        break
+        if ball.xcor() >= 500:
+            ball.goto(0,0)
+            title1.update()
+            if title1.score % 3 == 0 and title1.score < 6: #If you don't remember on what the modulo operator does,
+                comment.color(random.choice(color))         #It divides the two numbers, and returns the remains from the division
+                ball.move_y += 1                            #For example, if 5 were to divide by 4, then it would return 1, instead of the result from the 2 numbers.
+                comment.write(f'{random.choice(commenter1)}', align='center', font=("Courier New", 15, "normal"))
+                screen.update()
+                comment_expiration = time.time() + 1.5 #If you don't know what this variable means, it's that the variable will keep the current timer.
+                                                       #For example, if the time.time() is 100, then it would be 101.5, and it would not be counting.
+            ball.move_x = random.choice(RNG1)
+            ball.move_y = random.choice(RNG2)
+            bot_speed += 1
+            front_barrier1 = -460
+            back_barrier1 = -480
+            front_barrier2 = 460
+            back_barrier2 = 480
+            boost = time.time() + 3
 
-    if title2.score == 3:
-        timmy = turtle.Turtle()
-        timmy.hideturtle()
-        timmy.color(random.choice(color))
-        timmy.write(f'{random.choice(loser)}', align='center', font=("Courier New", 45, "normal"))
-        break
+        if ball.xcor() <= -500:
+            ball.goto(0,0)
+            title2.update()
+            comment.color(random.choice(color))
+            ball.move_y += 1
+            comment.write(f'{random.choice(commenter2)}', align='center', font=("Courier New", 15, "normal"))
+            screen.update()
+            comment_expiration = time.time() + 1.5
 
-    move_bot()
+            ball.move_x = random.choice(RNG1)
+            ball.move_y = random.choice(RNG2)
+            front_barrier1 = -460
+            back_barrier1 = -480
+            front_barrier2 = 460
+            back_barrier2 = 480
+            dash_sys.cooldown -= 0.25
+            boost = time.time() + 3
+
+        if comment_expiration != 0 and time.time() > comment_expiration: #This statement checks the duration of the text lasts, Before clearing itself.
+            comment.clear()
+            comment_expiration = 0
+
+        if title1.score == 6:
+            timmy = turtle.Turtle()
+            timmy.hideturtle()
+            timmy.color(random.choice(color))
+            timmy.write(f'{random.choice(winner)}', align='center', font=("Courier New", 45, "normal"))
+            break
+
+        if title2.score == 3:
+            timmy = turtle.Turtle()
+            timmy.hideturtle()
+            timmy.color(random.choice(color))
+            timmy.write(f'{random.choice(loser)}', align='center', font=("Courier New", 45, "normal"))
+            break
+
+        move_bot()
+
+draw_menu()
+screen.onkeypress(start_menu,'space')
 
 turtle.done()
 
